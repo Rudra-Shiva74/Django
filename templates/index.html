@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urine Strip Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+        }
+        
+        input[type="file"] {
+            display: block;
+            margin: 0 auto 20px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #result {
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .color-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #000;
+        }
+        
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Upload Urine Strip Image</h1>
+      <input type="file" id="fileInput" accept="image/*" />
+      <button id="uploadButton">Upload</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $("#uploadButton").click(function () {
+          const fileInput = $("#fileInput")[0];
+          if (fileInput.files.length === 0) {
+            alert("Please select a file!");
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+
+          $.ajax({
+            url: "/upload/",
+            type: "POST",
+            data: formData,
+            processData: false,
+            crossDomain:true,
+            contentType: false,
+            success: function (data) {
+              const resultDiv = $("#result");
+              resultDiv.empty();
+
+              $.each(data, function (label, color) {
+                const colorItem = $("<div></div>").addClass("color-item");
+                const colorBox = $("<div></div>")
+                  .addClass("color-box")
+                  .css(
+                    "background-color",
+                    `rgb(${color[0]}, ${color[1]}, ${color[2]})`
+                  );
+                const colorLabel = $("<span></span>").text(
+                  `${label}: rgb(${color[0]}, ${color[1]}, ${color[2]})`
+                );
+
+                colorItem.append(colorBox).append(colorLabel);
+                resultDiv.append(colorItem);
+              });
+            },
+            error: function (error) {
+              console.error("Error:", error);
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
