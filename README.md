@@ -28,5 +28,5 @@ This project is a web-based application that allows users to upload an image of 
 
 1. **Clone the Repository**:
    ```sh
-   git clone https://github.com/your-username/urine-strip-analyzer.git
-   cd urine-strip-analyzer
+   git clone https://github.com/Rudra-Shiva74/Django.git
+   cd Django
